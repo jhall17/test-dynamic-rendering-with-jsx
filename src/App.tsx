@@ -102,21 +102,44 @@ interface storybookComponentsType {
 }
 
 function App() {
-  const mapJsonToReact = (json: jsonStructure) => {
+  const mapJsonToReactJsx = (json: jsonStructure) => {
     return Object.values(json).map((parent: itemStructure) => {
-      const Component = (storybookComponents as storybookComponentsType)[parent.component];
+      const Component = (storybookComponents as storybookComponentsType)[
+        parent.component
+      ];
       return (
         <Component {...parent?.props}>
-          {parent.items && mapJsonToReact(parent.items)}
+          {parent.items && mapJsonToReactJsx(parent.items)}
         </Component>
       );
     });
   };
 
-  const OurCustomReactElement = mapJsonToReact(hardcodedJsonExample);
-  console.log("element=", OurCustomReactElement);
+  const mapJsonToReactCreateElement = (json: jsonStructure): JSX.Element[] => {
+    return Object.values(json).map((parent: itemStructure) => {
+      const Component = (storybookComponents as storybookComponentsType)[
+        parent.component
+      ];
+      return React.createElement(
+        Component,
+        parent?.props,
+        parent.items && mapJsonToReactCreateElement(parent.items)
+      );
+    });
+  };
 
-  return <>{OurCustomReactElement};</>;
+  const mappedViaJsx = mapJsonToReactJsx(hardcodedJsonExample);
+  const mappedViaCreateElement =
+    mapJsonToReactCreateElement(hardcodedJsonExample);
+
+  return (
+    <>
+      <h1>mappedViaJsx</h1>
+      {mappedViaJsx}
+      <h1>mappedViaCreateElement</h1>
+      {mappedViaCreateElement}
+    </>
+  );
 }
 
 export default App;
