@@ -36,11 +36,15 @@ const AlternativeChild = ({ text }: ChildProps) => {
   );
 };
 
-const storybookComponents = {
+const storybookComponents: storybookComponentsType = {
   Container,
   Child,
   AlternativeChild,
 };
+
+interface storybookComponentsType {
+  [key: string]: (props: any) => ReactElement;
+}
 
 const hardcodedJsonExample = {
   testContainer: {
@@ -97,16 +101,10 @@ interface jsonStructure {
   [key: string]: itemStructure;
 }
 
-interface storybookComponentsType {
-  [key: string]: (props: any) => ReactElement;
-}
-
 function App() {
   const mapJsonToReactJsx = (json: jsonStructure) => {
     return Object.values(json).map((parent: itemStructure) => {
-      const Component = (storybookComponents as storybookComponentsType)[
-        parent.component
-      ];
+      const Component = storybookComponents[parent.component];
       return (
         <Component {...parent?.props}>
           {parent.items && mapJsonToReactJsx(parent.items)}
@@ -117,9 +115,7 @@ function App() {
 
   const mapJsonToReactCreateElement = (json: jsonStructure): JSX.Element[] => {
     return Object.values(json).map((parent: itemStructure) => {
-      const Component = (storybookComponents as storybookComponentsType)[
-        parent.component
-      ];
+      const Component = storybookComponents[parent.component];
       return React.createElement(
         Component,
         parent?.props,
