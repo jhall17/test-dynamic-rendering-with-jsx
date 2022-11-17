@@ -102,9 +102,10 @@ interface jsonStructure {
 }
 
 function App() {
-  const mapJsonToReactJsx = (json: jsonStructure) => {
+  const mapJsonToReactJsx = (json: jsonStructure): JSX.Element[] => {
     return Object.values(json).map((parent: itemStructure) => {
       const Component = storybookComponents[parent.component];
+
       return (
         <Component {...parent?.props}>
           {parent.items && mapJsonToReactJsx(parent.items)}
@@ -116,6 +117,7 @@ function App() {
   const mapJsonToReactCreateElement = (json: jsonStructure): JSX.Element[] => {
     return Object.values(json).map((parent: itemStructure) => {
       const Component = storybookComponents[parent.component];
+      
       return React.createElement(
         Component,
         parent?.props,
